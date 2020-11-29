@@ -54,7 +54,6 @@ public abstract class AbstractRpcRemotingServer extends AbstractRpcRemoting impl
     private int listenPort;
 
     public void setListenPort(int listenPort) {
-
         if (listenPort <= 0) {
             throw new IllegalArgumentException("listen port: " + listenPort + " is invalid!");
         }
@@ -75,7 +74,7 @@ public abstract class AbstractRpcRemotingServer extends AbstractRpcRemoting impl
     }
 
     /**
-     * Instantiates a new Rpc remoting server.
+     * 实例化新的Rpc远程服务器.
      *
      * @param nettyServerConfig the netty server config
      * @param messageExecutor   the message executor
@@ -102,10 +101,16 @@ public abstract class AbstractRpcRemotingServer extends AbstractRpcRemoting impl
         if (null != handlers) {
             channelHandlers = handlers;
         }
-        // init listenPort in constructor so that getListenPort() will always get the exact port
+        // 在构造函数中初始化listenPort，以便getListenPort（）始终获得确切的端口
         setListenPort(nettyServerConfig.getDefaultListenPort());
     }
 
+    /**
+    * @Date:  2020-11-29
+    * @Param:  []
+    * @return:  void
+    * @Description:  开启服务端netty服务器
+    */
     @Override
     public void start() {
         this.serverBootstrap.group(this.eventLoopGroupBoss, this.eventLoopGroupWorker)
@@ -116,14 +121,14 @@ public abstract class AbstractRpcRemotingServer extends AbstractRpcRemoting impl
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childOption(ChannelOption.SO_SNDBUF, nettyServerConfig.getServerSocketSendBufSize())
             .childOption(ChannelOption.SO_RCVBUF, nettyServerConfig.getServerSocketResvBufSize())
-            .childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK,
-                nettyServerConfig.getWriteBufferHighWaterMark())
+            .childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, nettyServerConfig.getWriteBufferHighWaterMark())
             .childOption(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, nettyServerConfig.getWriteBufferLowWaterMark())
             .localAddress(new InetSocketAddress(listenPort))
             .childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) {
-                    ch.pipeline().addLast(new IdleStateHandler(nettyServerConfig.getChannelMaxReadIdleSeconds(), 0, 0))
+                    ch.pipeline()
+                        .addLast(new IdleStateHandler(nettyServerConfig.getChannelMaxReadIdleSeconds(), 0, 0))
                         .addLast(new MessageCodecHandler());
                     if (null != channelHandlers) {
                         addChannelPipelineLast(ch, channelHandlers);

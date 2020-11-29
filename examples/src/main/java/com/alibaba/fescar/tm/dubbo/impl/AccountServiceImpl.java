@@ -20,7 +20,6 @@ import com.alibaba.fescar.core.context.RootContext;
 import com.alibaba.fescar.test.common.ApplicationKeeper;
 import com.alibaba.fescar.tm.dubbo.AccountService;
 import com.alibaba.fescar.tm.dubbo.OrderService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -45,9 +44,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void debit(String userId, int money) {
         LOGGER.info("Account Service ... xid: " + RootContext.getXID());
-        LOGGER.info("Deducting balance SQL: update account_tbl set money = money - {} where user_id = {}",money,userId);
+        LOGGER.info("Deducting balance SQL: update account_tbl set money = money - {} where user_id = {}", money, userId);
 
-        jdbcTemplate.update("update account_tbl set money = money - ? where user_id = ?", new Object[] {money, userId});
+        jdbcTemplate.update("update account_tbl set money = money - ? where user_id = ?", new Object[]{money, userId});
         LOGGER.info("Account Service End ... ");
     }
 
@@ -56,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
         context.getBean("service");
         JdbcTemplate jdbcTemplate = (JdbcTemplate) context.getBean("jdbcTemplate");
         jdbcTemplate.update("delete from account_tbl where user_id = 'U100001'");
-        jdbcTemplate.update("insert into account_tbl(user_id, money) values ('U100001', 999)");
+        jdbcTemplate.update("insert into account_tbl(user_id, money) values ('U100001', 1000)");
 
         new ApplicationKeeper(context).keep();
     }

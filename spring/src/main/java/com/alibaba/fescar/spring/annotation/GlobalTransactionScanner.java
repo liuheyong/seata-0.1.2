@@ -47,7 +47,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @Project: fescar -all
  * @DateTime: 2018 /12/28 17:23
  * @FileName: GlobalTransactionScanner
- * @Description:
+ * @Description:  全局事务扫描器实例
  */
 public class GlobalTransactionScanner extends AbstractAutoProxyCreator implements InitializingBean {
 

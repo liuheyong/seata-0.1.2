@@ -108,7 +108,7 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         check();
         RootContext.unbind();
         if (role == GlobalTransactionRole.Participant) {
-            // Participant has no responsibility of committing
+            // 参与者不承担任何责任
             return;
         }
         status = transactionManager.rollback(xid);
@@ -131,6 +131,5 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         if (xid == null) {
             throw new ShouldNeverHappenException();
         }
-
     }
 }

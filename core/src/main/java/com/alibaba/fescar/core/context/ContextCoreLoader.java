@@ -22,7 +22,6 @@ public class ContextCoreLoader {
 
     private static class ContextCoreHolder {
         private static ContextCore INSTANCE;
-
         static {
             ContextCore contextCore = EnhancedServiceLoader.load(ContextCore.class);
             if (contextCore == null) {

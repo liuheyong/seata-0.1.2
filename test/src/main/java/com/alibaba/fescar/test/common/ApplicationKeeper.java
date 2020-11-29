@@ -44,7 +44,6 @@ public class ApplicationKeeper {
                 } catch (Exception e) {
                     LOGGER.error("Failed to close ApplicationContext", e);
                 }
-
                 try {
                     LOCK.lock();
                     STOP.signal();

@@ -36,25 +36,22 @@ public class Server {
             TimeUnit.SECONDS,
             new LinkedBlockingQueue(20000),
             new ThreadPoolExecutor.CallerRunsPolicy());
+    private static int DEFAULT_PORT = 8091;
 
     public static void main(String[] args) throws IOException {
-        //server端配置-netty服务器端配置信息
+        //TC server端配置-netty服务器端配置信息
         RpcServer rpcServer = new RpcServer(WORKING_THREADS);
-
-        int port = 8091;
-        if (args.length == 0) {
-            rpcServer.setListenPort(port);
-        }
-
-        if (args.length > 0) {
-            try {
-                port = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                System.err.println("Usage: sh fescar-server.sh $LISTEN_PORT $PATH_FOR_PERSISTENT_DATA");
-                System.exit(0);
-            }
-            rpcServer.setListenPort(port);
-        }
+        //TC server端口
+        //int port = DEFAULT_PORT;
+        //if (args.length > 0) {
+        //    try {
+        //        port = Integer.parseInt(args[0]);
+        //    } catch (NumberFormatException e) {
+        //        System.err.println("Usage: sh fescar-server.sh $LISTEN_PORT $PATH_FOR_PERSISTENT_DATA");
+        //        System.exit(0);
+        //    }
+        //}
+        //rpcServer.setListenPort(port);
 
         String dataDir = null;
         if (args.length > 1) {
@@ -63,6 +60,7 @@ public class Server {
         SessionHolder.init(dataDir);
 
         DefaultCoordinator coordinator = new DefaultCoordinator(rpcServer);
+        //初始化定时线程池
         coordinator.init();
         rpcServer.setHandler(new DefaultCoordinator(rpcServer));
 
@@ -71,6 +69,7 @@ public class Server {
         XID.setIpAddress(NetUtil.getLocalIp());
         XID.setPort(rpcServer.getListenPort());
 
+        // TODO 开启server服务端
         rpcServer.init();
 
         System.exit(0);

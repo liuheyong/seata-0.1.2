@@ -16,16 +16,11 @@
 
 package com.alibaba.fescar.tm.dubbo.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import com.alibaba.fescar.core.context.RootContext;
 import com.alibaba.fescar.test.common.ApplicationKeeper;
 import com.alibaba.fescar.tm.dubbo.AccountService;
 import com.alibaba.fescar.tm.dubbo.Order;
 import com.alibaba.fescar.tm.dubbo.OrderService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -33,6 +28,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * Please add the follow VM arguments:
@@ -53,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         LOGGER.info("Order Service Begin ... xid: " + RootContext.getXID());
 
         // 计算订单金额
-        int orderMoney = calculate(commodityCode, orderCount);
+        int orderMoney = calculate(orderCount);
 
         // 从账户余额扣款
         accountService.debit(userId, orderMoney);
@@ -66,7 +65,8 @@ public class OrderServiceImpl implements OrderService {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        LOGGER.info("Order Service SQL: insert into order_tbl (user_id, commodity_code, count, money) values ({}, {}, {}, {})" ,userId ,commodityCode ,orderCount ,orderMoney );
+        LOGGER.info("Order Service SQL: insert into order_tbl (user_id, commodity_code, count, money) values ({}, {}, {}, {})",
+                userId, commodityCode, orderCount, orderMoney);
 
         jdbcTemplate.update(new PreparedStatementCreator() {
 
@@ -98,12 +98,11 @@ public class OrderServiceImpl implements OrderService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private int calculate(String commodityId, int orderCount) {
+    private int calculate(int orderCount) {
         return 200 * orderCount;
     }
 
     public static void main(String[] args) {
-
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"dubbo-order-service.xml"});
         context.getBean("service");
         new ApplicationKeeper(context).keep();

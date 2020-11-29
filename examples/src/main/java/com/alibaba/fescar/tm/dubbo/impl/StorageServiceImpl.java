@@ -19,7 +19,6 @@ package com.alibaba.fescar.tm.dubbo.impl;
 import com.alibaba.fescar.core.context.RootContext;
 import com.alibaba.fescar.test.common.ApplicationKeeper;
 import com.alibaba.fescar.tm.dubbo.StorageService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -45,19 +44,18 @@ public class StorageServiceImpl implements StorageService {
     public void deduct(String commodityCode, int count) {
         LOGGER.info("Storage Service Begin ... xid: " + RootContext.getXID());
         LOGGER.info("Deducting inventory SQL: update storage_tbl set count = count - {} where commodity_code = {}",
-            count, commodityCode);
+                count, commodityCode);
 
         jdbcTemplate.update("update storage_tbl set count = count - ? where commodity_code = ?",
-            new Object[] {count, commodityCode});
+                new Object[]{count, commodityCode});
         LOGGER.info("Storage Service End ... ");
 
     }
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-            new String[] {"dubbo-storage-service.xml"});
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"dubbo-storage-service.xml"});
         context.getBean("service");
-        JdbcTemplate jdbcTemplate = (JdbcTemplate)context.getBean("jdbcTemplate");
+        JdbcTemplate jdbcTemplate = (JdbcTemplate) context.getBean("jdbcTemplate");
         jdbcTemplate.update("delete from storage_tbl where commodity_code = 'C00321'");
         jdbcTemplate.update("insert into storage_tbl(commodity_code, count) values ('C00321', 100)");
         new ApplicationKeeper(context).keep();
