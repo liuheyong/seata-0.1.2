@@ -132,6 +132,7 @@ public final class UndoLogManager {
                 }
 
             }
+
             deleteUndoLog(xid, branchId, conn);
 
             conn.commit();

@@ -66,7 +66,6 @@ public abstract class AbstractRpcRemotingServer extends AbstractRpcRemoting impl
 
     /**
      * Instantiates a new Rpc remoting server.
-     *
      * @param nettyServerConfig the netty server config
      */
     public AbstractRpcRemotingServer(final NettyServerConfig nettyServerConfig) {

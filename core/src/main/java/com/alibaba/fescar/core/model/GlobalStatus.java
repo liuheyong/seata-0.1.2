@@ -30,7 +30,6 @@ public enum GlobalStatus {
     // PHASE 1: can accept new branch registering.
     Begin,
 
-
     /** PHASE 2: Running Status: may be changed any time. */
 
     // Committing.
@@ -50,7 +49,6 @@ public enum GlobalStatus {
 
     // Retrying rollback (since timeout) after a recoverable failure.
     TimeoutRollbackRetrying,
-
 
     /** PHASE 2: Final Status: will NOT change any more. */
 

@@ -221,7 +221,6 @@ public class NettyClientConfig extends NettyBaseConfig {
 
     /**
      * Is use conn pool boolean.
-     *
      * @return the boolean
      */
     public boolean isUseConnPool() {

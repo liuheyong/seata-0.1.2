@@ -16,24 +16,15 @@
 
 package com.alibaba.fescar.tm;
 
-import java.util.concurrent.TimeoutException;
-
 import com.alibaba.fescar.common.XID;
 import com.alibaba.fescar.core.exception.TransactionException;
 import com.alibaba.fescar.core.exception.TransactionExceptionCode;
 import com.alibaba.fescar.core.model.GlobalStatus;
 import com.alibaba.fescar.core.model.TransactionManager;
-import com.alibaba.fescar.core.protocol.transaction.AbstractTransactionRequest;
-import com.alibaba.fescar.core.protocol.transaction.AbstractTransactionResponse;
-import com.alibaba.fescar.core.protocol.transaction.GlobalBeginRequest;
-import com.alibaba.fescar.core.protocol.transaction.GlobalBeginResponse;
-import com.alibaba.fescar.core.protocol.transaction.GlobalCommitRequest;
-import com.alibaba.fescar.core.protocol.transaction.GlobalCommitResponse;
-import com.alibaba.fescar.core.protocol.transaction.GlobalRollbackRequest;
-import com.alibaba.fescar.core.protocol.transaction.GlobalRollbackResponse;
-import com.alibaba.fescar.core.protocol.transaction.GlobalStatusRequest;
-import com.alibaba.fescar.core.protocol.transaction.GlobalStatusResponse;
+import com.alibaba.fescar.core.protocol.transaction.*;
 import com.alibaba.fescar.core.rpc.netty.TmRpcClient;
+
+import java.util.concurrent.TimeoutException;
 
 /**
  * The type Default transaction manager.
@@ -57,6 +48,12 @@ public class DefaultTransactionManager implements TransactionManager {
 
     }
 
+    /**
+    * @Date:  2020-11-30
+    * @Param:  [applicationId, transactionServiceGroup, name, timeout]
+    * @return:  java.lang.String
+    * @Description:  开启全局事务（GlobalBeginRequest）
+    */
     @Override
     public String begin(String applicationId, String transactionServiceGroup, String name, int timeout) throws TransactionException {
         GlobalBeginRequest request = new GlobalBeginRequest();
@@ -66,6 +63,12 @@ public class DefaultTransactionManager implements TransactionManager {
         return response.getXid();
     }
 
+    /**
+    * @Date:  2020-11-30
+    * @Param:  [xid]
+    * @return:  com.alibaba.fescar.core.model.GlobalStatus
+    * @Description:  全局事务提交（GlobalCommitRequest）
+    */
     @Override
     public GlobalStatus commit(String xid) throws TransactionException {
         long txId = XID.getTransactionId(xid);
@@ -75,6 +78,12 @@ public class DefaultTransactionManager implements TransactionManager {
         return response.getGlobalStatus();
     }
 
+    /**
+     * @Date:  2020-11-30
+     * @Param:  [xid]
+     * @return:  com.alibaba.fescar.core.model.GlobalStatus
+     * @Description:  全局事务回滚（GlobalRollbackRequest）
+     */
     @Override
     public GlobalStatus rollback(String xid) throws TransactionException {
         long txId = XID.getTransactionId(xid);
@@ -84,6 +93,12 @@ public class DefaultTransactionManager implements TransactionManager {
         return response.getGlobalStatus();
     }
 
+    /**
+     * @Date:  2020-11-30
+     * @Param:  [xid]
+     * @return:  com.alibaba.fescar.core.model.GlobalStatus
+     * @Description:  全局事务状态（GlobalStatusRequest）
+     */
     @Override
     public GlobalStatus getStatus(String xid) throws TransactionException {
         long txId = XID.getTransactionId(xid);
@@ -93,6 +108,7 @@ public class DefaultTransactionManager implements TransactionManager {
         return response.getGlobalStatus();
     }
 
+    // 同步调用
     private AbstractTransactionResponse syncCall(AbstractTransactionRequest request) throws TransactionException {
         try {
             return (AbstractTransactionResponse) TmRpcClient.getInstance().sendMsgWithResponse(request);

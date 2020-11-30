@@ -54,7 +54,7 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
     }
 
     protected T executeAutoCommitTrue(Object[] args) throws Throwable {
-        T result = null;
+        T result;
         AbstractConnectionProxy connectionProxy = statementProxy.getConnectionProxy();
         LockRetryController lockRetryController = new LockRetryController();
         try {
@@ -68,7 +68,6 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
                     lockRetryController.sleep(lockConflict);
                 }
             }
-
         } catch (Exception e) {
             // when exception occur in finally,this exception will lost, so just print it here
             LOGGER.error("exception occur", e);
@@ -80,8 +79,20 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
         return result;
     }
 
+    /**
+    * @Date:  2020-12-01
+    * @Param:
+    * @return:
+    * @Description:  记录事务执行前数据信息
+    */
     protected abstract TableRecords beforeImage() throws SQLException;
 
+    /**
+     * @Date:  2020-12-01
+     * @Param:
+     * @return:
+     * @Description:  记录事务执行后数据信息
+     */
     protected abstract TableRecords afterImage(TableRecords beforeImage) throws SQLException;
 
 }

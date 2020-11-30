@@ -50,7 +50,7 @@ public class InsertExecutor<T, S extends Statement> extends AbstractDMLBaseExecu
         SQLInsertRecognizer recogizier = (SQLInsertRecognizer) sqlRecognizer;
         List<String> insertColumns = recogizier.getInsertColumns();
         TableMeta tmeta = getTableMeta();
-        TableRecords afterImage = null;
+        TableRecords afterImage;
         if (tmeta.containsPK(insertColumns)) {
             // insert values including PK
             List<Object> pkValues = null;
@@ -84,8 +84,7 @@ public class InsertExecutor<T, S extends Statement> extends AbstractDMLBaseExecu
             if (!pkMeta.isAutoincrement()) {
                 throw new ShouldNeverHappenException();
             }
-
-            ResultSet genKeys = null;
+            ResultSet genKeys;
             try {
                 genKeys = statementProxy.getTargetStatement().getGeneratedKeys();
             } catch (SQLException e) {

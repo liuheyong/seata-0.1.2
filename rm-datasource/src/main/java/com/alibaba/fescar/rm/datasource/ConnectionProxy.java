@@ -16,9 +16,6 @@
 
 package com.alibaba.fescar.rm.datasource;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import com.alibaba.fescar.core.exception.TransactionException;
 import com.alibaba.fescar.core.exception.TransactionExceptionCode;
 import com.alibaba.fescar.core.model.BranchStatus;
@@ -29,9 +26,11 @@ import com.alibaba.fescar.rm.datasource.sql.struct.Field;
 import com.alibaba.fescar.rm.datasource.sql.struct.TableRecords;
 import com.alibaba.fescar.rm.datasource.undo.SQLUndoLog;
 import com.alibaba.fescar.rm.datasource.undo.UndoLogManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ConnectionProxy extends AbstractConnectionProxy {
 
@@ -52,10 +51,11 @@ public class ConnectionProxy extends AbstractConnectionProxy {
     }
 
     public void checkLock(TableRecords records) throws SQLException {
-        // Just check lock without requiring lock by now.
+        //只需检查锁定，而无需锁定。
         String lockKeys = buildLockKey(records);
         try {
-            boolean lockable = DataSourceManager.get().lockQuery(BranchType.AT, getDataSourceProxy().getResourceId(), context.getXid(), lockKeys);
+            boolean lockable = DataSourceManager.get().lockQuery(BranchType.AT, getDataSourceProxy().getResourceId(),
+                    context.getXid(), lockKeys);
             if (!lockable) {
                 throw new LockConflictException();
             }
@@ -63,11 +63,13 @@ public class ConnectionProxy extends AbstractConnectionProxy {
             recognizeLockKeyConflictException(e);
         }
     }
+
     public void register(TableRecords records) throws SQLException {
         // Just check lock without requiring lock by now.
         String lockKeys = buildLockKey(records);
         try {
-            DataSourceManager.get().branchRegister(BranchType.AT, getDataSourceProxy().getResourceId(), null, context.getXid(), lockKeys);
+            DataSourceManager.get().branchRegister(BranchType.AT, getDataSourceProxy().getResourceId(), null, context.getXid(),
+                    lockKeys);
         } catch (TransactionException e) {
             recognizeLockKeyConflictException(e);
         }
@@ -83,10 +85,10 @@ public class ConnectionProxy extends AbstractConnectionProxy {
     }
 
     public void prepareUndoLog(SQLType sqlType, String tableName, TableRecords beforeImage, TableRecords afterImage) throws SQLException {
-        if(beforeImage.getRows().size() == 0 && afterImage.getRows().size() == 0) {
+        if (beforeImage.getRows().size() == 0 && afterImage.getRows().size() == 0) {
             return;
-            }
-        
+        }
+
         TableRecords lockKeyRecords = afterImage;
         if (sqlType == SQLType.DELETE) {
             lockKeyRecords = beforeImage;
@@ -126,21 +128,31 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         return sb.toString();
     }
 
+    /**
+     * @Date: 2020-12-01
+     * @Param: []
+     * @return: void
+     * @Description: 在本地事务(分支事务)提交前，fescar会注册和上报分支事务相关的信息 // TODO wenyixicodedog
+     */
     @Override
     public void commit() throws SQLException {
+        //是全局分布式事务
         if (context.inGlobalTransaction()) {
             try {
+                //======  先向TC控制器注册分支事务
                 register();
             } catch (TransactionException e) {
                 recognizeLockKeyConflictException(e);
             }
-
             try {
-                if (context.hasUndoLog()) { 
+                //====== flushUndoLogs
+                if (context.hasUndoLog()) {
                     UndoLogManager.flushUndoLogs(this);
                 }
+                //====== 真正提交本地事务
                 targetConnection.commit();
             } catch (Throwable ex) {
+                //====== 向TC控制器上报事务状态
                 report(false);
                 if (ex instanceof SQLException) {
                     throw (SQLException) ex;
@@ -148,10 +160,11 @@ public class ConnectionProxy extends AbstractConnectionProxy {
                     throw new SQLException(ex);
                 }
             }
+            //====== 向TC控制器上报事务状态
             report(true);
             context.reset();
-        	
         } else {
+            //不是全局分布式事务、直接提交
             targetConnection.commit();
         }
     }
@@ -168,8 +181,9 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         if (context.inGlobalTransaction()) {
             if (context.isBranchRegistered()) {
                 report(false);
-            }}
-            context.reset();
+            }
+        }
+        context.reset();
     }
 
     @Override

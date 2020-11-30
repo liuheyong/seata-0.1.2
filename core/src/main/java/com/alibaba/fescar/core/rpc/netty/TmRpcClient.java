@@ -142,7 +142,6 @@ public final class TmRpcClient extends AbstractRpcRemotingClient {
 
     /**
      * Init.
-     *
      * @param healthCheckDelay  the health check delay
      * @param healthCheckPeriod the health check period
      */

@@ -36,23 +36,24 @@ public class ExecuteTemplate {
                                                      StatementProxy<S> statementProxy,
                                                      StatementCallback<T, S> statementCallback,
                                                      Object... args) throws SQLException {
-
+        //判断当前是否是全局分布式事务
         if (!RootContext.inGlobalTransaction()) {
-            // Just work as original statement
+            // 就直接使用本地事务
             return statementCallback.execute(statementProxy.getTargetStatement(), args);
         }
-
         if (sqlRecognizer == null) {
             sqlRecognizer = SQLVisitorFactory.get(
                     statementProxy.getTargetSQL(),
                     statementProxy.getConnectionProxy().getDbType());
         }
-        Executor<T> executor = null;
+        Executor<T> executor;
         if (sqlRecognizer == null) {
             executor = new PlainExecutor<T, S>(statementProxy, statementCallback);
         } else {
             switch (sqlRecognizer.getSQLType()) {
                 case INSERT:
+                    //UpdateExecutor、DeleteExecutor、InsertExecutor：
+                    //三个DML增删改执行器实现，主要在sql执行的前后对sql语句进行了解析
                     executor = new InsertExecutor<T, S>(statementProxy, statementCallback, sqlRecognizer);
                     break;
                 case UPDATE:
@@ -65,19 +66,21 @@ public class ExecuteTemplate {
                     executor = new SelectForUpdateExecutor(statementProxy, statementCallback, sqlRecognizer);
                     break;
                 default:
+                    //PlainExecutor 原生的JDBC接口实现，未做任何处理，提供给全局事务中的普通的select查询使用
                     executor = new PlainExecutor<T, S>(statementProxy, statementCallback);
                     break;
             }
         }
         T rs = null;
         try {
+
             rs = executor.execute(args);
 
         } catch (Throwable ex) {
             if (ex instanceof SQLException) {
                 throw (SQLException) ex;
             } else {
-                // Turn everything into SQLException
+                // 把一切都变成SQLException
                 new SQLException(ex);
             }
         }

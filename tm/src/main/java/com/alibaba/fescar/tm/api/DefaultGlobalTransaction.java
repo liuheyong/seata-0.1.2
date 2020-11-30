@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The type Default global transaction.
+ * 默认的全局事务类、全局事务具体的开启，提交、回滚动作
  */
 public class DefaultGlobalTransaction implements GlobalTransaction {
 

@@ -19,13 +19,17 @@ package com.alibaba.fescar.rm;
 import com.alibaba.fescar.core.exception.TransactionException;
 import com.alibaba.fescar.core.model.BranchStatus;
 import com.alibaba.fescar.core.protocol.transaction.*;
-import com.alibaba.fescar.core.protocol.transaction.BranchRollbackRequest;
 import com.alibaba.fescar.core.rpc.TransactionMessageHandler;
 import com.alibaba.fescar.rm.datasource.DataSourceManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+* @Date:  2020-12-01
+* @Param:
+* @return:
+* @Description:  分支服务接收到TC发出的请求后，首先会被路由到RMHandlerAT // TODO wenyixicodedog
+*/
 public class RMHandlerAT extends AbstractRMHandlerAT implements RMInboundHandler, TransactionMessageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RMHandlerAT.class);
@@ -42,7 +46,6 @@ public class RMHandlerAT extends AbstractRMHandlerAT implements RMInboundHandler
         BranchStatus status = dataSourceManager.branchCommit(xid, branchId, resourceId, applicationData);
         response.setBranchStatus(status);
         LOGGER.info("AT Branch commit result: " + status);
-
     }
 
     @Override
@@ -55,6 +58,5 @@ public class RMHandlerAT extends AbstractRMHandlerAT implements RMInboundHandler
         BranchStatus status = dataSourceManager.branchRollback(xid, branchId, resourceId, applicationData);
         response.setBranchStatus(status);
         LOGGER.info("AT Branch rollback result: " + status);
-
     }
 }

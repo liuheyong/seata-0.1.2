@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Project: fescar-all
  * @DateTime: 2018/10/10 14:28
  * @FileName: EnhancedServiceLoader
- * @Description:
+ * @Description: 增强型服务加载程序
  */
 public class EnhancedServiceLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(EnhancedServiceLoader.class);

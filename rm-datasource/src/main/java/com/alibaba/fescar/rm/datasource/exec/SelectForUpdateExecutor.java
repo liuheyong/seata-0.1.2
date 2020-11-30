@@ -36,12 +36,18 @@ public class SelectForUpdateExecutor<S extends Statement> extends BaseTransactio
         super(statementProxy, statementCallback, sqlRecognizer);
     }
 
+    /**
+    * @Date:  2020-12-01
+    * @Param:
+    * @return:
+    * @Description:  fescar的AT模式在本地事务之上默认支持读未提交的隔离级别，但是通过SelectForUpdateExecutor执行器，可以支持读已提交的隔离级别
+    */
     @Override
     public Object doExecute(Object... args) throws Throwable {
         SQLSelectRecognizer recognizer = (SQLSelectRecognizer) sqlRecognizer;
 
         Connection conn = statementProxy.getConnection();
-        ResultSet rs = null;
+        ResultSet rs;
         Savepoint sp = null;
         LockRetryController lockRetryController = new LockRetryController();
         boolean originalAutoCommit = conn.getAutoCommit();
@@ -85,15 +91,14 @@ public class SelectForUpdateExecutor<S extends Statement> extends BaseTransactio
                         }
                         rsPK = pstPK.executeQuery();
                     }
-
+                    //通过selectPKRows表操作记录拿到lockKeys，然后到TC控制器端
+                    // 查询是否被全局锁定了，如果被锁定了，就重新尝试，直到锁释放返回查询结果。
                     TableRecords selectPKRows = TableRecords.buildRecords(getTableMeta(), rsPK);
                     statementProxy.getConnectionProxy().checkLock(selectPKRows);
                     break;
-
                 } catch (LockConflictException lce) {
                     conn.rollback(sp);
                     lockRetryController.sleep(lce);
-
                 } finally {
                     if (rsPK != null) {
                         rsPK.close();

@@ -21,7 +21,6 @@ import com.alibaba.fescar.spring.annotation.GlobalTransactional;
 import com.alibaba.fescar.tm.dubbo.BusinessService;
 import com.alibaba.fescar.tm.dubbo.OrderService;
 import com.alibaba.fescar.tm.dubbo.StorageService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -41,7 +40,7 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     @GlobalTransactional(timeoutMills = 5 * 60 * 1000, name = "dubbo-demo-tx")
-    public void purchase(String userId, String commodityCode, int orderCount) throws Exception {
+    public void purchase(String userId, String commodityCode, int orderCount) {
         LOGGER.info("purchase begin ... xid: " + RootContext.getXID());
         storageService.deduct(commodityCode, orderCount);
         orderService.create(userId, commodityCode, orderCount);
@@ -57,8 +56,8 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"dubbo-business.xml"});
-        final BusinessService business = (BusinessService)context.getBean("business");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"dubbo-business.xml"});
+        final BusinessService business = (BusinessService) context.getBean("business");
         business.purchase("U100001", "C00321", 2);
     }
 }

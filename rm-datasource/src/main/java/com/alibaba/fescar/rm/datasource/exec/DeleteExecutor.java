@@ -54,7 +54,7 @@ public class DeleteExecutor<T, S extends Statement> extends AbstractDMLBaseExecu
                 selectSQLAppender.append(", ");
             }
         }
-        String whereCondition = null;
+        String whereCondition;
         ArrayList<Object> paramAppender = new ArrayList<>();
         if (statementProxy instanceof ParametersHolder) {
             whereCondition = visitor.getWhereCondition((ParametersHolder) statementProxy, paramAppender);
@@ -64,7 +64,7 @@ public class DeleteExecutor<T, S extends Statement> extends AbstractDMLBaseExecu
         selectSQLAppender.append(" FROM " + getFromTableInSQL() + " WHERE " + whereCondition + " FOR UPDATE");
         String selectSQL = selectSQLAppender.toString();
 
-        TableRecords beforeImage = null;
+        TableRecords beforeImage;
         PreparedStatement ps = null;
         Statement st = null;
         ResultSet rs = null;

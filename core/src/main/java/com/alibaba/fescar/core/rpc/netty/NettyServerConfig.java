@@ -73,7 +73,6 @@ public class NettyServerConfig extends NettyBaseConfig {
 
     /**
      * Gets server selector threads.
-     *
      * @return the server selector threads
      */
     public int getServerSelectorThreads() {

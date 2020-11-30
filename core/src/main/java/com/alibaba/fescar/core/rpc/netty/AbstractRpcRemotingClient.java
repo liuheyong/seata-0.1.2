@@ -102,7 +102,6 @@ public abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
 
     /**
      * Instantiates a new Rpc remoting client.
-     *
      * @param nettyClientConfig the netty client config
      */
     public AbstractRpcRemotingClient(final NettyClientConfig nettyClientConfig) {

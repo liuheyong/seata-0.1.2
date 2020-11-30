@@ -112,13 +112,11 @@ public class DefaultCore implements Core {
         } else {
             return true;
         }
-
     }
 
     @Override
     public String begin(String applicationId, String transactionServiceGroup, String name, int timeout) throws TransactionException {
-        GlobalSession session = GlobalSession.createGlobalSession(
-                applicationId, transactionServiceGroup, name, timeout);
+        GlobalSession session = GlobalSession.createGlobalSession(applicationId, transactionServiceGroup, name, timeout);
         session.addSessionLifecycleListener(SessionHolder.getRootSessionManager());
 
         session.begin();
@@ -142,7 +140,6 @@ public class DefaultCore implements Core {
             } else {
                 doGlobalCommit(globalSession, false);
             }
-
         }
         return globalSession.getStatus();
     }
@@ -155,8 +152,8 @@ public class DefaultCore implements Core {
                 continue;
             }
             try {
-                BranchStatus branchStatus = resourceManagerInbound.branchCommit(XID.generateXID(branchSession.getTransactionId()), branchSession.getBranchId(),
-                        branchSession.getResourceId(), branchSession.getApplicationData());
+                BranchStatus branchStatus = resourceManagerInbound.branchCommit(XID.generateXID(branchSession.getTransactionId()),
+                        branchSession.getBranchId(), branchSession.getResourceId(), branchSession.getApplicationData());
 
                 switch (branchStatus) {
                     case PhaseTwo_Committed:
@@ -186,7 +183,6 @@ public class DefaultCore implements Core {
                                     globalSession.getTransactionId(), branchSession.getBranchId());
                             return;
                         }
-
                 }
 
             } catch (Exception ex) {
@@ -247,21 +243,21 @@ public class DefaultCore implements Core {
         if (status == GlobalStatus.Begin) {
             globalSession.changeStatus(GlobalStatus.Rollbacking);
             doGlobalRollback(globalSession, false);
-
         }
         return globalSession.getStatus();
     }
 
     @Override
     public void doGlobalRollback(GlobalSession globalSession, boolean retrying) throws TransactionException {
+        //回滚时从全局事务会话中迭代每个分支事务，然后通知每个分支事务回滚
         for (BranchSession branchSession : globalSession.getReverseSortedBranches()) {
             BranchStatus currentBranchStatus = branchSession.getStatus();
             if (currentBranchStatus == BranchStatus.PhaseOne_Failed) {
                 continue;
             }
             try {
-                BranchStatus branchStatus = resourceManagerInbound.branchRollback(XID.generateXID(branchSession.getTransactionId()), branchSession.getBranchId(),
-                    branchSession.getResourceId(), branchSession.getApplicationData());
+
+                BranchStatus branchStatus = resourceManagerInbound.branchRollback(XID.generateXID(branchSession.getTransactionId()), branchSession.getBranchId(), branchSession.getResourceId(), branchSession.getApplicationData());
 
                 switch (branchStatus) {
                     case PhaseTwo_Rollbacked:
@@ -279,7 +275,6 @@ public class DefaultCore implements Core {
                             queueToRetryRollback(globalSession);
                         }
                         return;
-
                 }
             } catch (Exception ex) {
                 LOGGER.info("Exception rollbacking branch " + branchSession, ex);

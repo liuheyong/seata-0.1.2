@@ -18,18 +18,16 @@ package com.alibaba.fescar.dubbo;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
-import com.alibaba.dubbo.rpc.Filter;
-import com.alibaba.dubbo.rpc.Invocation;
-import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.Result;
-import com.alibaba.dubbo.rpc.RpcContext;
-import com.alibaba.dubbo.rpc.RpcException;
+import com.alibaba.dubbo.rpc.*;
 import com.alibaba.fescar.core.context.RootContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Activate(group = { Constants.PROVIDER, Constants.CONSUMER }, order = 100)
+/**
+ * @Date: 2020-11-30
+ * @Description: 事务传播过滤器
+ */
+@Activate(group = {Constants.PROVIDER, Constants.CONSUMER}, order = 100)
 public class TransactionPropagationFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionPropagationFilter.class);
@@ -54,6 +52,7 @@ public class TransactionPropagationFilter implements Filter {
             }
         }
         try {
+
             return invoker.invoke(invocation);
 
         } finally {

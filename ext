@@ -1,0 +1,64 @@
+1、==================== undo记录的格式 ====================
+rollback_info保存的undo_log详细信息，是longblob类型的，结构如下：
+
+{
+    "branchId":3958194,
+    "sqlUndoLogs":[
+        {
+            "afterImage":{
+                "rows":[
+                    {
+                        "fields":[
+                            {
+                                "keyType":"PrimaryKey",
+                                "name":"ID",
+                                "type":4,
+                                "value":10
+                            },
+                            {
+                                "keyType":"NULL",
+                                "name":"COUNT",
+                                "type":4,
+                                "value":98
+                            }
+                        ]
+                    }
+                ],
+                "tableName":"storage_tbl"
+            },
+            "beforeImage":{
+                "rows":[
+                    {
+                        "fields":[
+                            {
+                                "keyType":"PrimaryKey",
+                                "name":"ID",
+                                "type":4,
+                                "value":10
+                            },
+                            {
+                                "keyType":"NULL",
+                                "name":"COUNT",
+                                "type":4,
+                                "value":100
+                            }
+                        ]
+                    }
+                ],
+                "tableName":"storage_tbl"
+            },
+            "sqlType":"UPDATE",
+            "tableName":"storage_tbl"
+        }
+    ],
+    "xid":"192.168.7.77:8091:3958193"
+}
+
+这里贴的是一个update的操作，undo_log记录的非常的详细，通过全局事务xid关联branchid，记录数据操作的表名，操作字段名，以及sql执行前后的记录数，如这个记录，表名=storage_tbl,sql执行前ID=10，count=100，sql执行后id=10，count=98。如果整个全局事务失败，需要回滚的时候就可以生成：
+
+update storage_tbl set count = 100 where id = 10;
+这样的回滚sql语句执行了。
+
+2、==================== undo记录的清理 ====================
+RM分支事务端最后执行的是UndoLogManager的undo方法，通过xid和branchid从数据库查询出回滚日志，完成数据回滚操作，
+整个过程都是同步完成的。如果全局事务是成功的，TC也会有类似的上述协调过程，只不过是异步的将本次全局事务相关的undo_log清除了而已。

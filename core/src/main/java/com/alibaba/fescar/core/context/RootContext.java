@@ -17,7 +17,6 @@
 package com.alibaba.fescar.core.context;
 
 import com.alibaba.fescar.common.exception.ShouldNeverHappenException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -164,7 +164,6 @@ public final class RmRpcClient extends AbstractRpcRemotingClient {
 
     /**
      * Sets application id.
-     *
      * @param applicationId the application id
      */
     public void setApplicationId(String applicationId) {
