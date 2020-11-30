@@ -19,7 +19,7 @@ package com.alibaba.fescar.tm.api;
 import com.alibaba.fescar.core.exception.TransactionException;
 
 /**
- *  使用全局事务执行业务逻辑的模板。
+ * 全局事务的开启，提交、回滚都被封装在TransactionalTemplate中
  */
 public class TransactionalTemplate {
 
@@ -32,52 +32,38 @@ public class TransactionalTemplate {
      */
     public Object execute(TransactionalExecutor business) throws TransactionalExecutor.ExecutionException {
 
-        // 1. get or create a transaction
+        // 1. 获取或者新建一个事务
         GlobalTransaction tx = GlobalTransactionContext.getCurrentOrCreate();
 
-        // 2. begin transaction
+        // 2. 开始事务
         try {
             tx.begin(business.timeout(), business.name());
-
         } catch (TransactionException txe) {
-            throw new TransactionalExecutor.ExecutionException(tx, txe,
-                TransactionalExecutor.Code.BeginFailure);
-
+            throw new TransactionalExecutor.ExecutionException(tx, txe, TransactionalExecutor.Code.BeginFailure);
         }
-
-        Object rs = null;
+        Object rs;
         try {
 
-            // Do Your Business
+            // 执行@GlobalTransactional标注了的业务逻辑
             rs = business.execute();
 
         } catch (Throwable ex) {
-
-            // 3. any business exception, rollback.
+            // 3. 任何业务逻辑执行异常，开始回滚
             try {
                 tx.rollback();
-
-                // 3.1 Successfully rolled back
+                // 3.1 回滚成功
                 throw new TransactionalExecutor.ExecutionException(tx, TransactionalExecutor.Code.RollbackDone, ex);
-
             } catch (TransactionException txe) {
-                // 3.2 Failed to rollback
-                throw new TransactionalExecutor.ExecutionException(tx, txe,
-                    TransactionalExecutor.Code.RollbackFailure, ex);
-
+                // 3.2 回滚失败
+                throw new TransactionalExecutor.ExecutionException(tx, txe, TransactionalExecutor.Code.RollbackFailure, ex);
             }
-
         }
-
-        // 4. everything is fine, commit.
+        // 4. 一切都很好，提交。
         try {
             tx.commit();
-
         } catch (TransactionException txe) {
-            // 4.1 Failed to commit
-            throw new TransactionalExecutor.ExecutionException(tx, txe,
-                TransactionalExecutor.Code.CommitFailure);
-
+            // 4.1 提交失败
+            throw new TransactionalExecutor.ExecutionException(tx, txe, TransactionalExecutor.Code.CommitFailure);
         }
         return rs;
     }

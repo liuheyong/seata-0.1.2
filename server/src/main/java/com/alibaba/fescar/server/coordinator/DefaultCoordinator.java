@@ -134,8 +134,7 @@ public class DefaultCoordinator extends AbstractTCInboundHandler
     public BranchStatus branchCommit(String xid, long branchId, String resourceId, String applicationData)
         throws TransactionException {
         try {
-            BranchCommitRequest
-                request = new BranchCommitRequest();
+            BranchCommitRequest request = new BranchCommitRequest();
             request.setXid(xid);
             request.setBranchId(branchId);
             request.setResourceId(resourceId);

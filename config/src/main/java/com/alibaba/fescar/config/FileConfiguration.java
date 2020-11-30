@@ -221,7 +221,7 @@ public class FileConfiguration implements Configuration {
     }
 
     /**
-     * The type Config operate runnable.
+     * 配置操作线程 .
      */
     class ConfigOperateRunnable implements Runnable {
 
@@ -271,7 +271,7 @@ public class FileConfiguration implements Configuration {
     }
 
     /**
-     * The type Config change runnable.
+     * 配置变更线程 .
      */
     class ConfigChangeRunnable implements Runnable {
 
@@ -290,7 +290,6 @@ public class FileConfiguration implements Configuration {
          * @param listener the listener
          */
         public ConfigChangeRunnable(String dataId, ConfigChangeListener listener) {
-
             if (null == listener.getExecutor()) {
                 throw new IllegalArgumentException("getExecutor is null.");
             }

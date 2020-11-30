@@ -16,23 +16,18 @@
 
 package com.alibaba.fescar.common.loader;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author: jimin.jm@alibaba-inc.com
@@ -149,7 +144,7 @@ public class EnhancedServiceLoader {
 
             if (extensions.isEmpty()) {
                 throw new EnhancedServiceNotFoundException("not found service provider for : " + service.getName() + "[" + activateName
-                    + "] and classloader : " + ObjectUtils.toString(loader));
+                        + "] and classloader : " + ObjectUtils.toString(loader));
             }
             Class<?> extension = extensions.get(extensions.size() - 1);// 最大的一个
             S result = service.cast(extension.newInstance());
@@ -162,7 +157,7 @@ public class EnhancedServiceLoader {
                 throw (EnhancedServiceNotFoundException) e;
             } else {
                 throw new EnhancedServiceNotFoundException(
-                    "not found service provider for : " + service.getName() + " caused by " + ExceptionUtils.getFullStackTrace(e));
+                        "not found service provider for : " + service.getName() + " caused by " + ExceptionUtils.getFullStackTrace(e));
             }
         }
     }

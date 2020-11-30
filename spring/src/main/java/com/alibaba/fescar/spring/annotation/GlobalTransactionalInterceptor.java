@@ -29,6 +29,11 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
+/**
+ * @Author: liuheyong
+ * @date: 2020/11/30
+ * @Description: 全局事务拦截器
+ */
 public class GlobalTransactionalInterceptor implements MethodInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTransactionalInterceptor.class);
@@ -44,12 +49,6 @@ public class GlobalTransactionalInterceptor implements MethodInterceptor {
         this.failureHandler = failureHandler;
     }
 
-    /**
-     * @Date: 2020-11-29
-     * @Param: [methodInvocation]
-     * @return: java.lang.Object
-     * @Description: 将标注了@GlobalTransactional注解的方法织入invoke方法逻辑
-     */
     @Override
     public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
         final GlobalTransactional anno = getAnnotation(methodInvocation.getMethod());
@@ -91,8 +90,10 @@ public class GlobalTransactionalInterceptor implements MethodInterceptor {
                         throw e.getCause();
                     default:
                         throw new ShouldNeverHappenException("Unknown TransactionalExecutor.Code: " + code);
+
                 }
             }
+
         }
         return methodInvocation.proceed();
     }

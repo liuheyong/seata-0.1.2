@@ -132,6 +132,7 @@ public class ConfigFuture {
      */
     public void setResult(Object result) {
         this.result = result;
+        //放开门栓
         latch.countDown();
     }
 

@@ -55,8 +55,7 @@ public class AccountServiceImpl implements AccountService {
         context.getBean("service");
         JdbcTemplate jdbcTemplate = (JdbcTemplate) context.getBean("jdbcTemplate");
         jdbcTemplate.update("delete from account_tbl where user_id = 'U100001'");
-        jdbcTemplate.update("insert into account_tbl(user_id, money) values ('U100001', 1000)");
-
+        jdbcTemplate.update("insert into account_tbl(user_id, money) values ('U100001', 999)");
         new ApplicationKeeper(context).keep();
     }
 }

@@ -46,7 +46,6 @@ public enum FrameworkErrorCode {
     ChannelIsNotWritable("0109", "ChannelIsNotWritable", "ChannelIsNotWritable"),
     NoAvailableService("0110", "NoAvailableService", "NoAvailableService"),
 
-
     InvalidConfiguration("0201", "InvalidConfiguration", "InvalidConfiguration"),
 
     ExceptionCaught("0318", "异常", ""),
@@ -55,7 +54,7 @@ public enum FrameworkErrorCode {
     /**
      * 未定义错误
      */
-    UnknownAppError("10000","unknown error","内部错误"),
+    UnknownAppError("10000", "unknown error", "内部错误"),
     ;
 
     public String errCode;

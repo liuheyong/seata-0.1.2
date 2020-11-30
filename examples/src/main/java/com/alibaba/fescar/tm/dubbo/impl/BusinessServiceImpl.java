@@ -56,7 +56,7 @@ public class BusinessServiceImpl implements BusinessService {
         this.orderService = orderService;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"dubbo-business.xml"});
         final BusinessService business = (BusinessService)context.getBean("business");
         business.purchase("U100001", "C00321", 2);
