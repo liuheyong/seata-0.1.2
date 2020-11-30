@@ -16,20 +16,24 @@
 
 package com.alibaba.fescar.spring.annotation;
 
-import java.lang.reflect.Method;
-
 import com.alibaba.fescar.common.exception.ShouldNeverHappenException;
 import com.alibaba.fescar.common.util.StringUtils;
 import com.alibaba.fescar.tm.api.DefaultFailureHandlerImpl;
 import com.alibaba.fescar.tm.api.FailureHandler;
 import com.alibaba.fescar.tm.api.TransactionalExecutor;
 import com.alibaba.fescar.tm.api.TransactionalTemplate;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
+
+/**
+ * @Author: liuheyong
+ * @date: 2020/11/30
+ * @Description: 全局事务拦截器
+ */
 public class GlobalTransactionalInterceptor implements MethodInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTransactionalInterceptor.class);

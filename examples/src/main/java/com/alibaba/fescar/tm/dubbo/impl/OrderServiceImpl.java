@@ -103,7 +103,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public static void main(String[] args) {
-
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"dubbo-order-service.xml"});
         context.getBean("service");
         new ApplicationKeeper(context).keep();

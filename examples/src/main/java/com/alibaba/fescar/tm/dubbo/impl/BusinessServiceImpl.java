@@ -46,7 +46,6 @@ public class BusinessServiceImpl implements BusinessService {
         storageService.deduct(commodityCode, orderCount);
         orderService.create(userId, commodityCode, orderCount);
         throw new RuntimeException("xxx");
-
     }
 
     public void setStorageService(StorageService storageService) {
@@ -58,8 +57,7 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-            new String[] {"dubbo-business.xml"});
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"dubbo-business.xml"});
         final BusinessService business = (BusinessService)context.getBean("business");
         business.purchase("U100001", "C00321", 2);
     }

@@ -22,7 +22,6 @@ import com.alibaba.fescar.core.exception.TransactionException;
 import com.alibaba.fescar.core.model.GlobalStatus;
 import com.alibaba.fescar.core.model.TransactionManager;
 import com.alibaba.fescar.tm.DefaultTransactionManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

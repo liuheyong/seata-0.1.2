@@ -24,7 +24,6 @@ import com.alibaba.fescar.core.rpc.RpcContext;
 
 public abstract class AbstractTCInboundHandler extends AbstractExceptionHandler implements TCInboundHandler {
 
-
     @Override
     public GlobalBeginResponse handle(GlobalBeginRequest request, final RpcContext rpcContext) {
         GlobalBeginResponse response = new GlobalBeginResponse();

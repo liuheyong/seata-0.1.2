@@ -194,8 +194,7 @@ public final class TmRpcClient extends AbstractRpcRemotingClient {
         String validAddress = svrAddr != null ? svrAddr : loadBalance();
         Channel acquireChannel = connect(validAddress);
         Object result = super.sendAsyncRequestWithResponse(validAddress, acquireChannel, msg, timeout);
-        if (result instanceof GlobalBeginResponse
-            && ((GlobalBeginResponse)result).getResultCode() == ResultCode.Failed) {
+        if (result instanceof GlobalBeginResponse && ((GlobalBeginResponse)result).getResultCode() == ResultCode.Failed) {
             LOGGER.error("begin response error,release channel:" + acquireChannel);
             releaseChannel(acquireChannel, validAddress);
         }

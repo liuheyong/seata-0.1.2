@@ -54,8 +54,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-            new String[] {"dubbo-storage-service.xml"});
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"dubbo-storage-service.xml"});
         context.getBean("service");
         JdbcTemplate jdbcTemplate = (JdbcTemplate)context.getBean("jdbcTemplate");
         jdbcTemplate.update("delete from storage_tbl where commodity_code = 'C00321'");
