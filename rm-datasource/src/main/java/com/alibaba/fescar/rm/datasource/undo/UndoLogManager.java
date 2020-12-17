@@ -110,10 +110,10 @@ public final class UndoLogManager {
         try {
             conn = dataSourceProxy.getPlainConnection();
 
-            // The entire undo process should run in a local transaction.
+            // 整个撤消过程应在本地事务中运行。
             conn.setAutoCommit(false);
 
-            // Find UNDO LOG
+            // 查找 UNDO LOG
             selectPST = conn.prepareStatement(SELECT_UNDO_LOG_SQL);
             selectPST.setLong(1, branchId);
             selectPST.setString(2, xid);
@@ -146,7 +146,6 @@ public final class UndoLogManager {
                 }
             }
             throw new TransactionException(BranchRollbackFailed_Retriable, String.format("%s/%s", branchId, xid), e);
-
         } finally {
             try {
                 if (rs != null) {
