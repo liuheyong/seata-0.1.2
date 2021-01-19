@@ -26,7 +26,7 @@
         <module>config</module>
         <module>common</module>
         <module>server</module>
-        <module>distribution</module>
+        <!--<module>distribution</module>-->
         <module>core</module>
         <module>rm-datasource</module>
         <module>tm</module>
@@ -102,11 +102,11 @@
                 <artifactId>fescar-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>fescar-client</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+            <!--<dependency>-->
+            <!--    <groupId>${project.groupId}</groupId>-->
+            <!--    <artifactId>fescar-client</artifactId>-->
+            <!--    <version>${project.version}</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>fescar-server</artifactId>
